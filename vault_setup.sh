@@ -35,8 +35,6 @@ check_vault() {
   echo "Vault is ready!"
 }
 
-echo "Waiting for Vault to start up... ($WAIT_TIME seconds)"
-
 check_vault
 
 echo "Enabling KV secrets engine at path 'db'..."
