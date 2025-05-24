@@ -27,13 +27,6 @@ jobs:
         env:
           VAULT_DEV_ROOT_TOKEN_ID: ${{ secrets.VAULT_DEV_ROOT_TOKEN_ID }}
 
-      - name: Check Vault container status
-        run: |
-          sleep 10  # Give Vault time to start
-          docker compose ps -a  # Check container status
-          docker compose logs vault  # Check Vault logs
-          curl -v http://localhost:8200/v1/sys/health  # Test connection with verbose output
-
       - name: Setup Vault
         run: |
           chmod +x vault_setup.sh
