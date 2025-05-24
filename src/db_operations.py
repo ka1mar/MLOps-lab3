@@ -26,7 +26,7 @@ class DatabaseOperator:
 
         self.log.info("DatabaseOperator initialized")
 
-        self._wait_for_db()
+        self._test_connection_to_db()
         self._setup_database()
     
     def _get_db_credentials_from_vault(self):
@@ -40,7 +40,7 @@ class DatabaseOperator:
 
             response = requests.get(url, headers=headers)
             if response.status_code != 200:
-                self.log.error(f"Failed to fetch secrets from Vault: {response.text}")
+                self.log.error(f"Failed to fetch secrets from Vault: {response.status_code}, {response.text}")
                 raise Exception("Failed to fetch secrets from Vault")
 
             secrets = response.json()['data']
@@ -57,28 +57,22 @@ class DatabaseOperator:
             self.log.error(f"Error retrieving credentials from Vault: {e}")
             raise
 
-    def _wait_for_db(self, max_attempts=30, delay=10):
+    def _test_connection_to_db(self):
         self.log.info("Waiting for Greenplum database to be ready...")
-        attempts = 0
-        while attempts < max_attempts:
-            try:
-                conn = psycopg2.connect(
-                    host=self.db_host,
-                    port=self.db_port,
-                    dbname=self.db_name,
-                    user=self.db_user,
-                    password=self.db_password
-                )
-                conn.close()
-                self.log.info("Database connection established successfully")
-                return
-            except psycopg2.OperationalError:
-                attempts += 1
-                self.log.info(f"Database not ready yet. Attempt {attempts}/{max_attempts}")
-                time.sleep(delay)
-        
-        self.log.error("Failed to connect to database after several attempts")
-        raise ConnectionError("Could not connect to the Greenplum database")
+        try:
+            conn = psycopg2.connect(
+                host=self.db_host,
+                port=self.db_port,
+                dbname=self.db_name,
+                user=self.db_user,
+                password=self.db_password
+            )
+            conn.close()
+            self.log.info("Database connection established successfully")
+            return
+        except psycopg2.OperationalError:
+            self.log.info(f"Error with connection to the database")
+            raise ConnectionError("Could not connect to the Greenplum database")
     
     def _setup_database(self):
         conn = None
