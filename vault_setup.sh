@@ -10,32 +10,32 @@ USER=${USER}
 PASSWORD=${PASSWORD}
 
 
-check_vault() {
-  echo "Checking if Vault is ready..."
-  local max_retries=10
-  local retry=0
-  local status=1
+# check_vault() {
+#   echo "Checking if Vault is ready..."
+#   local max_retries=10
+#   local retry=0
+#   local status=1
   
-  while [ $retry -lt $max_retries ] && [ $status -ne 0 ]; do
-    curl -s -o /dev/null -w "%{http_code}" $VAULT_ADDR/v1/sys/health > /dev/null 2>&1
-    status=$?
+#   while [ $retry -lt $max_retries ] && [ $status -ne 0 ]; do
+#     curl -s -o /dev/null -w "%{http_code}" $VAULT_ADDR/v1/sys/health > /dev/null 2>&1
+#     status=$?
     
-    if [ $status -ne 0 ]; then
-      retry=$((retry+1))
-      echo "Vault not ready yet. Retry $retry of $max_retries..."
-      sleep 5
-    fi
-  done
+#     if [ $status -ne 0 ]; then
+#       retry=$((retry+1))
+#       echo "Vault not ready yet. Retry $retry of $max_retries..."
+#       sleep 5
+#     fi
+#   done
   
-  if [ $status -ne 0 ]; then
-    echo "Error: Vault is not available after $max_retries retries."
-    exit 1
-  fi
+#   if [ $status -ne 0 ]; then
+#     echo "Error: Vault is not available after $max_retries retries."
+#     exit 1
+#   fi
   
-  echo "Vault is ready!"
-}
+#   echo "Vault is ready!"
+# }
 
-check_vault
+# check_vault
 
 echo "Enabling KV secrets engine at path 'db'..."
 curl -s \
