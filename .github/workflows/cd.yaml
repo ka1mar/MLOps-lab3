@@ -31,7 +31,7 @@ jobs:
         run: |
           sleep 10  # Give Vault time to start
           docker ps -a  # Check container status
-          docker logs vault  # Check Vault logs
+          docker logs mlops-lab3-vault  # Check Vault logs
           curl -v http://localhost:8200/v1/sys/health  # Test connection with verbose output
 
       - name: Setup Vault
