@@ -25,7 +25,7 @@ jobs:
       - name: Pull and start Vault container
         run: docker compose up -d vault
         env:
-          VAULT_TOKEN: ${{ secrets.VAULT_DEV_ROOT_TOKEN_ID }}
+          VAULT_DEV_ROOT_TOKEN_ID: ${{ secrets.VAULT_DEV_ROOT_TOKEN_ID }}
 
       - name: Setup Vault
         run: |
@@ -33,7 +33,7 @@ jobs:
           ./vault_setup.sh
         env:
           VAULT_ADDR: http://localhost:8200
-          VAULT_TOKEN: ${{ secrets.VAULT_DEV_ROOT_TOKEN_ID }}
+          VAULT_DEV_ROOT_TOKEN_ID: ${{ secrets.VAULT_DEV_ROOT_TOKEN_ID }}
           HOST: ${{ secrets.HOST }}
           PORT: ${{ secrets.PORT }}
           DBNAME: ${{ secrets.DBNAME }}
