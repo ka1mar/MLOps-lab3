@@ -27,7 +27,7 @@ jobs:
 
       - name: Setup Vault
         run: |
-          chmod +x setup-vault.sh
+          chmod +x vault_setup.sh
           ./vault_setup.sh
         env:
           VAULT_ADDR: http://localhost:8200
