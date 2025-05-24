@@ -23,7 +23,7 @@ jobs:
         run: docker compose pull
 
       - name: Pull and start Vault container
-        run: docker-compose up -d vault
+        run: docker compose up -d vault
 
       - name: Setup Vault
         run: |
