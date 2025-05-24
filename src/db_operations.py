@@ -31,31 +31,31 @@ class DatabaseOperator:
     
     def _get_db_credentials_from_vault(self):
         """Fetch database credentials from HashiCorp Vault"""
-        try:
-            vault_addr = os.environ.get('VAULT_ADDR', 'http://localhost:8200')
-            vault_token = os.environ.get('VAULT_TOKEN', 'myroot')
-            
-            headers = {'X-Vault-Token': vault_token}
-            url = f"{vault_addr}/v1/db/credentials"
+        #try:
+        vault_addr = os.environ.get('VAULT_ADDR', 'http://localhost:8200')
+        vault_token = os.environ.get('VAULT_TOKEN', 'myroot')
 
-            response = requests.get(url, headers=headers)
-            if response.status_code != 200:
-                self.log.error(f"Failed to fetch secrets from Vault: {response.status_code}, {response.text}")
-                raise Exception("Failed to fetch secrets from Vault")
+        headers = {'X-Vault-Token': vault_token}
+        url = f"{vault_addr}/v1/db/credentials"
 
-            secrets = response.json()['data']
+        response = requests.get(url, headers=headers)
+        if response.status_code != 200:
+            self.log.error(f"Failed to fetch secrets from Vault: {response.status_code}, {response.text}")
+            raise Exception("Failed to fetch secrets from Vault")
+
+        secrets = response.json()['data']
+        
+        self.db_host = secrets['host']
+        self.db_port = secrets['port']
+        self.db_name = secrets['dbname']
+        self.db_user = secrets['user']
+        self.db_password = secrets['password']
+        
+        self.log.info("Successfully retrieved database credentials from Vault")
             
-            self.db_host = secrets['host']
-            self.db_port = secrets['port']
-            self.db_name = secrets['dbname']
-            self.db_user = secrets['user']
-            self.db_password = secrets['password']
-            
-            self.log.info("Successfully retrieved database credentials from Vault")
-            
-        except Exception as e:
-            self.log.error(f"Error retrieving credentials from Vault: {e}")
-            raise
+        # except Exception as e:
+        #     self.log.error(f"Error retrieving credentials from Vault: {e}")
+        #     raise
 
     def _test_connection_to_db(self):
         self.log.info("Waiting for Greenplum database to be ready...")
