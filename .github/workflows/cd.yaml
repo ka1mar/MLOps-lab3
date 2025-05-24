@@ -24,6 +24,8 @@ jobs:
 
       - name: Pull and start Vault container
         run: docker compose up -d vault
+        env:
+          VAULT_TOKEN: ${{ secrets.VAULT_DEV_ROOT_TOKEN_ID }}
 
       - name: Setup Vault
         run: |
